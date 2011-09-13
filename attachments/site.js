@@ -73,5 +73,59 @@ $.couch.app(function(app) {
     }
   });
 
+  /**
+   * Queries our database for its info, so we can grab the latest
+   * update_seq, i.e., the current number of updates to the database.
+   *
+   * <pre>
+   * <code>
+   *   > curl -X GET http://couch/db
+   *   {
+   *     "db_name": "foo",
+   *     "doc_count": 11,
+   *     "doc_del_count": 0,
+   *     "update_seq": 22,
+   *     "purge_seq": 0,
+   *     "compact_running": false,
+   *     "disk_size": 143449,
+   *     "instance_start_time": "1315945046506731",
+   *     "disk_format_version": 5,
+   *     "committed_update_seq": 22
+   *   }
+   * </code>
+   * </pre>
+   *
+   * From there, we can register for changes (listening to the /_changes
+   * resource), starting from the latest update sequence, and add new
+   * chirps to our UI as they come in.
+   *
+   * Note, it's fun to run this and watch the changes come in:
+   *
+   * <pre>
+   *   <code>curl -X GET 'http://couch/db/_changes?feed=continuous'</code>
+   * </pre>
+   */
+  app.db.info({
+    success: function(data) {
+      window.db_info = data;
+      var since = (data.update_seq || 0);
+      app.db.changes(since, {include_docs: true}).onChange(function(changes) {
+        var docs = [];
+        for (var i in changes.results) {
+          if (changes.results[i].doc) {
+            var doc = changes.results[i].doc;
+            if (doc.type === "chirp") {
+              docs.push({
+                _id: doc._id,
+                body: doc.body,
+                created_at: new Date(doc.created_at)
+              });
+            }
+          }
+        }
+        $('#chirps').prepend($.mustache(chirpTemplate, {chirps: docs}));
+      });
+    }
+  });
 
 });
