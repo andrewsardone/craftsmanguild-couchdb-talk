@@ -5,10 +5,29 @@
     <meta name="keywords" content="" />
     <meta name="description" content="" />
 
-    <title></title>
+    <title>Chirpr</title>
+    <link href="layout.css" rel="stylesheet" type="text/css" />
   </head>
 
   <body>
+    <header>
+      <h1>SoloTweets</h1>
+    </header>
+    <div id="add-chirp">
+      <form>
+        <h3>(fyi, nobody's listening)</h3>
+        <p>
+          <label>
+            <input id="add-chirp-body" size="85" type="text" name="chirp"/>
+            <input id="add-chirp-submit-button" type="submit" value="Chirp &rarr;">
+          </label>
+        </p>
+      </form>
+    </div>
+    <div id="content">
+      <ul id="chirps">
+      </ul>
+    </div>
   </body>
 
   <script language="javascript" type="text/javascript" src="jquery.js"></script>
