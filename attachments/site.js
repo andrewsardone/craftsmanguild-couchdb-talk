@@ -1,5 +1,8 @@
 $.couch.app(function(app) {
 
+  // Mustache template for a single chirp
+  var chirpTemplate = "{{#chirps}}\n<li id=\"{{_id}}\" class=\"chirp\">\n  <div class=\"chirp-body\">{{body}}</div>\n  <div class=\"chirp-date\">{{created_at}}</div>\n</li>\n{{/chirps}}";
+
   /**
    * Saves the given chirp to our database
    *
@@ -55,8 +58,18 @@ $.couch.app(function(app) {
   app.view('recent-chirps', {
     descending: true,
     success: function(data) {
-      $.log("Recent chirps: ");
-      $.log(data);
+      var rows = [];
+      for (var i in data.rows) {
+        if (data.rows[i].value) {
+          var value = data.rows[i].value;
+          rows.push({
+            _id: value._id,
+            body: value.body,
+            created_at: new Date(value.created_at)
+          });
+        }
+      }
+      $('#chirps').prepend($.mustache(chirpTemplate, {chirps: rows}));
     }
   });
 
