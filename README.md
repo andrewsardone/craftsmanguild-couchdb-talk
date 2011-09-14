@@ -13,6 +13,8 @@ Then, within the repo, simply create a target database on your CouchDB of choice
     curl -X PUT http://localhost:5984/chirpr
     couchapp push app.js http://localhost:5984/chirpr
 
+Visit [http://localhost:5984/chirpr/_design/app/index.html](http://localhost:5984/chirpr/_design/app/index.html) (or wherever you deployed your app).
+
 ### Note
 
 Chirpr is a really trivial app. Its sole purpose is to demonstrate serving resources from Couch which then query Couch from the client. Of course, expanding could create jQuery spaghetti code. You might take a look at:
